@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ====== Meta & SEO ====== -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nova — Modern, Fully-Styled Website</title>
+  <meta name="description" content="Nova is a modern, responsive, accessible website template with dark mode, animations, and clean components." />
+  <meta name="theme-color" content="#0ea5e9" />
+  <link rel="icon" href="data:image/svg+xml,
+    %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E
+    %3Ccircle cx='32' cy='32' r='30' fill='%230ea5e9'/%3E
+    %3Cpath d='M18 36l8-16 6 10 4-6 10 12H18z' fill='white'/%3E%3C/svg%3E" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Nova — Modern, Fully-Styled Website" />
+  <meta property="og:description" content="A polished web template with dark mode, animation, and responsive layout." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1527443154391-507e9dc6c5cc?q=80&w=1200&auto=format&fit=crop" />
+
+  <!-- ====== Fonts (system stack for performance) ====== -->
+  <style>
+    /* ====== CSS RESET (accessible, minimal) ====== */
+    *,*::before,*::after{box-sizing:border-box}
+    :where(html){-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    :where(body){margin:0;line-height:1.6}
+    img,svg,video,canvas{display:block;max-width:100%;height:auto}
+    input,button,textarea,select{font:inherit}
+    a{color:inherit;text-decoration:none}
+    button{cursor:pointer}
+    :focus-visible{outline:3px solid var(--color-accent);outline-offset:2px}
+
+    /* ====== THEME TOKENS ====== */
+    :root{
+      --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --radius: 14px;
+      --radius-sm: 10px;
+      --shadow-1: 0 10px 30px rgba(2,6,23,.08);
+      --shadow-2: 0 20px 50px rgba(2,6,23,.16);
+      /* Light */
+      --bg: #0b1020;
+      --surface: #0f172a;
+      --elev: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --ring: rgba(14,165,233,.35);
+      --color-accent: #0ea5e9; /* sky-500 */
+      --accent-2: #22d3ee; /* cyan-400 */
+      --grad-1: linear-gradient(135deg, #0ea5e9, #22d3ee 60%, #a78bfa);
+      --card-grad: radial-gradient(1000px 500px at 10% 10%, rgba(56,189,248,.12), transparent 45%),
+                   radial-gradient(800px 400px at 90% -10%, rgba(124,58,237,.12), transparent 50%);
+    }
+    /* Auto dark based on OS; toggle overrides via [data-theme] */
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#ffffff; --surface:#f8fafc; --elev:#ffffff;
+        --text:#0f172a; --muted:#475569; --ring:rgba(14,165,233,.4);
+      }
+    }
+    html[data-theme="light"]{
+      --bg:#ffffff; --surface:#f8fafc; --elev:#ffffff;
+      --text:#0f172a; --muted:#475569; --ring:rgba(14,165,233,.4);
+    }
+    html[data-theme="dark"]{
+      --bg:#0b1020; --surface:#0f172a; --elev:#111827;
+      --text:#e5e7eb; --muted:#9ca3af; --ring:rgba(14,165,233,.35);
+    }
+
+    /* ====== GLOBALS ====== */
+    body{
+      font-family: var(--font-sans);
+      color: var(--text);
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(56,189,248,.12), transparent 40%),
+                  radial-gradient(1000px 500px at 120% 10%, rgba(168,85,247,.10), transparent 45%),
+                  var(--bg);
+      min-height: 100svh;
+    }
+    .container{
+      width:min(1100px, 92vw);
+      margin-inline:auto;
+    }
+    .section{padding: clamp(64px, 8vw, 110px) 0}
+    .grid{display:grid; gap:clamp(16px,2.4vw,28px)}
+    .btn{
+      --btn-bg:var(--color-accent);
+      --btn-fg:white;
+      display:inline-flex; align-items:center; gap:.6rem;
+      background:var(--btn-bg); color:var(--btn-fg);
+      padding:.9rem 1.1rem; border-radius:999px; border:0;
+      box-shadow: var(--shadow-1);
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .btn:hover{transform:translateY(-2px); box-shadow:var(--shadow-2)}
+    .btn.secondary{--btn-bg:transparent; --btn-fg:var(--text); border:1px solid rgba(148,163,184,.25); backdrop-filter: blur(6px)}
+    .chip{display:inline-flex;gap:.5rem;align-items:center;background:rgba(14,165,233,.12); color:#67e8f9; padding:.35rem .7rem;border:1px solid rgba(14,165,233,.35); border-radius:999px; font-weight:600; letter-spacing:.3px}
+
+    /* ====== NAVBAR ====== */
+    .nav{
+      position:sticky; top:0; z-index:50; backdrop-filter:saturate(1.2) blur(8px);
+      background: color-mix(in oklab, var(--bg) 75%, transparent);
+      border-bottom: 1px solid rgba(148,163,184,.15);
+    }
+    .nav-inner{display:flex; align-items:center; justify-content:space-between; padding:14px 0}
+    .brand{display:flex; gap:.6rem; align-items:center; font-weight:800; letter-spacing:.3px}
+    .brand svg{width:28px; height:28px}
+    .nav-links{display:flex; gap:1rem; align-items:center}
+    .nav-links a{padding:.55rem .8rem; border-radius:999px; font-weight:600; color:var(--muted)}
+    .nav-links a.active, .nav-links a:hover{color:var(--text); background:rgba(148,163,184,.12)}
+    .burger{display:none; background:none; border:0; padding:.5rem; border-radius:10px}
+    .theme-toggle{background:none; border:1px solid rgba(148,163,184,.25); border-radius:999px; padding:.55rem .7rem; color:var(--muted)}
+    .drawer{display:none}
+
+    @media (max-width: 900px){
+      .nav-links{display:none}
+      .burger{display:inline-flex}
+      .drawer{
+        position:fixed; inset:60px 12px auto; display:none; flex-direction:column; gap:.6rem;
+        background:var(--elev); border:1px solid rgba(148,163,184,.2); border-radius:var(--radius); padding:12px; box-shadow:var(--shadow-2)
+      }
+      .drawer a{padding:.9rem 1rem; border-radius:12px; background:rgba(148,163,184,.1)}
+      .drawer.open{display:flex}
+    }
+
+    /* ====== HERO ====== */
+    .hero{
+      padding: clamp(72px, 10vw, 140px) 0 clamp(40px, 7vw, 90px);
+      position:relative; overflow:hidden;
+    }
+    .hero .grid{grid-template-columns: 1.1fr .9fr; align-items:center}
+    .headline{
+      font-size:clamp(2.2rem, 4.7vw, 4rem);
+      line-height:1.05; font-weight:900; letter-spacing:-.02em;
+      background: var(--grad-1); -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .sub{color:var(--muted); font-size:clamp(1rem, 1.4vw, 1.15rem)}
+    .hero-card{
+      background:var(--elev); border:1px solid rgba(148,163,184,.2); border-radius:var(--radius);
+      padding:18px; box-shadow:var(--shadow-1); position:relative; isolation:isolate; overflow:hidden;
+    }
+    .hero-card::after{
+      content:""; position:absolute; inset:-2px; border-radius:inherit; pointer-events:none;
+      background: conic-gradient(from 0deg at 50% 50%, rgba(14,165,233,.25), transparent 35%, rgba(124,58,237,.25) 50%, transparent 75%, rgba(14,165,233,.25));
+      filter: blur(24px); opacity:.25; z-index:-1;
+    }
+    .stat{
+      display:grid; grid-template-columns: auto 1fr auto; gap:10px; align-items:center;
+      padding:12px 14px; border-radius:12px; background:var(--card-grad);
+      border:1px solid rgba(148,163,184,.2)
+    }
+    .kpi{font-size:1.3rem; font-weight:800}
+    .kpi small{display:block; color:var(--muted); font-weight:600; letter-spacing:.3px}
+
+    @media (max-width: 900px){
+      .hero .grid{grid-template-columns:1fr}
+      .hero-card{order:-1}
+    }
+
+    /* ====== FEATURES ====== */
+    .features .grid{grid-template-columns:repeat(3,1fr)}
+    .card{
+      background:var(--elev); border:1px solid rgba(148,163,184,.18); border-radius:var(--radius);
+      padding:18px; box-shadow:var(--shadow-1); position:relative; overflow:hidden;
+      transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .card:hover{transform: translateY(-4px); box-shadow:var(--shadow-2); border-color: rgba(14,165,233,.35)}
+    .icon-wrap{
+      width:46px; height:46px; border-radius:12px; display:grid; place-items:center;
+      background:rgba(14,165,233,.15); color:#67e8f9; border:1px solid rgba(14,165,233,.3); margin-bottom:10px
+    }
+    .muted{color:var(--muted)}
+    @media (max-width: 900px){ .features .grid{grid-template-columns:1fr} }
+
+    /* ====== SHOWCASE / GALLERY ====== */
+    .gallery{grid-template-columns: 2fr 1fr; align-items:stretch}
+    .gallery img, .gallery figure{border-radius:16px; border:1px solid rgba(148,163,184,.2)}
+    .gallery figure{overflow:hidden}
+    .gallery figcaption{padding:10px 12px; color:var(--muted); font-size:.9rem}
+    @media (max-width: 900px){ .gallery{grid-template-columns:1fr} }
+
+    /* ====== PRICING ====== */
+    .pricing .grid{grid-template-columns:repeat(3,1fr)}
+    .plan{
+      padding:20px; border-radius:18px; border:1px solid rgba(148,163,184,.2); background:var(--elev); box-shadow:var(--shadow-1)
+    }
+    .plan.best{border-color:transparent; background:
+      radial-gradient(1200px 600px at -10% -10%, rgba(56,189,248,.2), transparent 40%), var(--elev);
+      outline:2px solid var(--ring)
+    }
+    .price{font-size:2rem; font-weight:900}
+    .ul{list-style:none; padding:0; margin:12px 0 0}
+    .ul li{display:flex; gap:.6rem; align-items:flex-start; margin:.5rem 0}
+    .ul svg{flex:0 0 18px; margin-top:2px}
+    @media (max-width: 900px){ .pricing .grid{grid-template-columns:1fr} }
+
+    /* ====== TESTIMONIALS ====== */
+    .testimonials .grid{grid-template-columns: repeat(3,1fr)}
+    .quote{background:var(--elev); border:1px solid rgba(148,163,184,.2); border-radius:16px; padding:18px; position:relative}
+    .quote::before{
+      content:"“"; position:absolute; font-size:80px; line-height:0; top:12px; left:10px; color:rgba(148,163,184,.25); font-weight:900
+    }
+    @media (max-width: 900px){ .testimonials .grid{grid-template-columns:1fr} }
+
+    /* ====== CTA ====== */
+    .cta{
+      background:linear-gradient(135deg, rgba(14,165,233,.15), rgba(124,58,237,.15));
+      border:1px solid rgba(148,163,184,.2); border-radius:22px; padding:clamp(20px,5vw,34px);
+    }
+
+    /* ====== FOOTER / CONTACT ====== */
+    .footer{
+      padding:40px 0 80px; color:var(--muted); border-top:1px solid rgba(148,163,184,.15)
+    }
+    .form{
+      display:grid; gap:10px; grid-template-columns: repeat(2,1fr);
+      background:var(--elev); padding:16px; border-radius:14px; border:1px solid rgba(148,163,184,.2)
+    }
+    .form .full{grid-column:1/-1}
+    label{font-weight:700; font-size:.9rem}
+    input, textarea{
+      width:100%; background:color-mix(in srgb, var(--surface) 85%, transparent);
+      border:1px solid rgba(148,163,184,.25); color:var(--text);
+      padding:.8rem .9rem; border-radius:10px; outline:0
+    }
+    input:focus, textarea:focus{box-shadow:0 0 0 4px var(--ring); border-color:transparent}
+    textarea{min-height:120px; resize:vertical}
+    .msg{font-size:.95rem}
+    .ok{color:#22c55e}
+    .err{color:#ef4444}
+
+    /* ====== UTILITIES ====== */
+    .center{text-align:center}
+    .spacer{height:30px}
+    .hide-visually{position:absolute!important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0}
+    .fade-up{opacity:0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease}
+    .fade-up.show{opacity:1; transform:none}
+    @media (prefers-reduced-motion: reduce){
+      .btn, .card{transition:none}
+      .fade-up{transition:none}
+    }
+
+  </style>
+</head>
+<body>
+  <!-- ====== NAVBAR ====== -->
+  <header class="nav" role="banner">
+    <div class="container nav-inner">
+      <a class="brand" href="#top" aria-label="Nova home">
+        <svg aria-hidden="true" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="30" fill="url(#g)"/><path d="M18 36l8-16 6 10 4-6 10 12H18z" fill="#fff"/><defs><linearGradient id="g" x1="0" x2="64" y1="0" y2="64"><stop stop-color="#0ea5e9"/><stop offset=".6" stop-color="#22d3ee"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs></svg>
+        Nova
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#features">Features</a>
+        <a href="#showcase">Showcase</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div style="display:flex; gap:.5rem; align-items:center">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌗</button>
+        <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="drawer" class="drawer" role="dialog" aria-modal="true" aria-label="Mobile Menu">
+      <a href="#features">Features</a>
+      <a href="#showcase">Showcase</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#testimonials">Testimonials</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </header>
+
+  <!-- ====== HERO ====== -->
+  <main id="top">
+    <section class="hero">
+      <div class="container grid">
+        <div class="fade-up">
+          <span class="chip">✨ New: Nova v1.0</span>
+          <h1 class="headline" style="margin:.6rem 0 1rem">Build delightful websites, faster.</h1>
+          <p class="sub">A polished, production-ready template with clean components, buttery animations, and accessibility baked in. Just plug in your content and ship. 💡</p>
+          <div class="spacer"></div>
+          <div style="display:flex; gap:.8rem; flex-wrap:wrap">
+            <a href="#pricing" class="btn"><span>Get Started</span>
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-width="2" d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+            <a href="#showcase" class="btn secondary">See it in action</a>
+          </div>
+          <div class="spacer"></div>
+          <div class="grid" style="grid-template-columns:repeat(3,1fr)">
+            <div class="stat"><strong class="kpi">98%+</strong><small>Performance score</small></div>
+            <div class="stat"><strong class="kpi">A11y</strong><small>WCAG-friendly</small></div>
+            <div class="stat"><strong class="kpi">0 deps</strong><small>No build step</small></div>
+          </div>
+        </div>
+        <div class="hero-card fade-up" aria-label="Hero visual">
+          <svg role="img" aria-label="Colorful abstract" viewBox="0 0 600 420" style="width:100%; height:auto; border-radius:14px">
+            <defs>
+              <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#0ea5e9"/><stop offset=".6" stop-color="#22d3ee"/><stop offset="1" stop-color="#a78bfa"/>
+              </linearGradient>
+              <filter id="blur"><feGaussianBlur stdDeviation="40" edgeMode="duplicate"/></filter>
+            </defs>
+            <rect width="600" height="420" fill="#0b1020"/>
+            <g filter="url(#blur)" opacity=".85">
+              <circle cx="120" cy="80" r="110" fill="url(#lg)"/>
+              <circle cx="520" cy="90" r="90" fill="#22d3ee"/>
+              <circle cx="340" cy="340" r="140" fill="#a78bfa"/>
+              <circle cx="80" cy="340" r="90" fill="#0ea5e9"/>
+            </g>
+            <rect x="70" y="80" rx="16" width="460" height="260" fill="#0f172a" stroke="rgba(148,163,184,.35)"/>
+            <g transform="translate(100,110)">
+              <rect width="90" height="10" rx="5" fill="url(#lg)"/>
+              <rect y="22" width="160" height="8" rx="4" fill="rgba(148,163,184,.6)"/>
+              <rect y="38" width="200" height="8" rx="4" fill="rgba(148,163,184,.35)"/>
+              <rect x="0" y="70" width="360" height="140" rx="10" fill="#0b1020" stroke="rgba(148,163,184,.25)"/>
+              <rect x="20" y="90" width="110" height="14" rx="7" fill="rgba(56,189,248,.5)"/>
+              <rect x="20" y="112" width="220" height="8" rx="4" fill="rgba(148,163,184,.35)"/>
+              <rect x="20" y="130" width="190" height="8" rx="4" fill="rgba(148,163,184,.2)"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== FEATURES ====== -->
+    <section id="features" class="section features">
+      <div class="container">
+        <div class="center fade-up">
+          <h2 style="font-size:clamp(1.6rem,3.2vw,2.2rem); margin:0 0 .5rem">Everything you need, nothing you don’t</h2>
+          <p class="muted">Clean components, delightful motion, and semantics that make screen readers happy. ✔️</p>
+        </div>
+        <div class="spacer"></div>
+        <div class="grid">
+          <article class="card fade-up">
+            <div class="icon-wrap" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" d="M4 4h16v12H4z"/><path stroke-width="2" d="M9 20h6"/></svg>
+            </div>
+            <h3>Responsive by default</h3>
+            <p class="muted">Fluid grids and content-aware spacing that adapts to any screen.</p>
+          </article>
+          <article class="card fade-up">
+            <div class="icon-wrap" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" d="M12 3v18M3 12h18"/></svg>
+            </div>
+            <h3>Themeable</h3>
+            <p class="muted">One click light/dark, powered by CSS variables and persisted in localStorage.</p>
+          </article>
+          <article class="card fade-up">
+            <div class="icon-wrap" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" d="M6 12l4 4 8-8"/></svg>
+            </div>
+            <h3>Accessible</h3>
+            <p class="muted">Focus states, semantic landmarks, reduced-motion support, and color contrast out of the box.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== SHOWCASE / GALLERY ====== -->
+    <section id="showcase" class="section">
+      <div class="container">
+        <div class="grid gallery">
+          <figure class="fade-up">
+            <img alt="Vibrant gradient abstract" src="https://images.unsplash.com/photo-1541872703-74c5e44368f9?q=80&w=1600&auto=format&fit=crop" />
+            <figcaption>Crafted visuals that feel alive.</figcaption>
+          </figure>
+          <div class="grid">
+            <figure class="fade-up">
+              <img alt="Minimal UI mockup" src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=900&auto=format&fit=crop" />
+              <figcaption>Minimal UI, maximum clarity.</figcaption>
+            </figure>
+            <figure class="fade-up">
+              <img alt="Developer workstation" src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=900&auto=format&fit=crop" />
+              <figcaption>Built for makers like you.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== PRICING ====== -->
+    <section id="pricing" class="section pricing">
+      <div class="container">
+        <div class="center fade-up">
+          <h2 style="margin:0 0 .6rem">Simple, transparent pricing</h2>
+          <p class="muted">Start free, grow as you need. Cancel anytime.</p>
+        </div>
+        <div class="spacer"></div>
+        <div class="grid">
+          <div class="plan fade-up">
+            <h3>Starter</h3>
+            <p class="muted">For personal projects</p>
+            <p class="price">$0<span class="muted">/mo</span></p>
+            <ul class="ul">
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e"><path stroke-width="2" d="M6 12l4 4 8-8"/></svg>
+                <span>All base components</span>
+              </li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e"><path stroke-width="2" d="M6 12l4 4 8-8"/></svg><span>Email support</span></li>
+              <li class="muted"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8"><path stroke-width="2" d="M18 6 6 18"/></svg><span>Team seats</span></li>
+            </ul>
+            <div class="spacer"></div>
+            <a class="btn" href="#contact" aria-label="Choose Starter">Choose Starter</a>
+          </div>
+          <div class="plan best fade-up">
+            <h3>Pro</h3>
+            <p class="muted">For growing teams</p>
+            <p class="price">$19<span class="muted">/mo</span></p>
+            <ul class="ul">
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e"><path stroke-width="2" d="M6 12l4 4 8-8"/></svg><span>Everything in Starter</span></li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24  " fill="none" stroke="#22c55e"><path stroke-width="2" d="M6 12l4 4 8-8"/></svg><span>Unlimited projects</span></li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e"><path stroke-width="2" d="M6 12l4 4 8-8"/></svg><span>Priority support</span></li>
+            </ul>
+            <div class="spacer"></div>
+            <a class="btn" href="#contact" aria-label="Choose Pro">Go Pro</a>
+          </div>
+          <div class="plan fade-up">
+            <h3>Enterprise</h3>
+            <p class="muted">Security & SSO</p>
+            <p class="price">Let's talk</p>
+            <ul class="ul">
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e"><path stroke-width="2" d="M6 12l4 4 8-8"/></svg><span>Custom components</span></li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e"><path stroke-width="2" d="M6 12l4 4 8-8"/></svg><span>Dedicated manager</span></li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e"><path stroke-width="2" d="M6 12l4 4 8-8"/></svg><span>Uptime SLA</span></li>
+            </ul>
+            <div class="spacer"></div>
+            <a class="btn" href="#contact" aria-label="Contact sales">Contact Sales</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== TESTIMONIALS ====== -->
+    <section id="testimonials" class="section testimonials">
+      <div class="container">
+        <div class="center fade-up">
+          <h2>Loved by builders</h2>
+          <p class="muted">What our users say about Nova.</p>
+        </div>
+        <div class="spacer"></div>
+        <div class="grid">
+          <figure class="quote fade-up">
+            <blockquote>Nova helped us ship a beautiful site in a weekend. The components are top-notch.</blockquote>
+            <figcaption class="muted">— Alex R., Product Designer</figcaption>
+          </figure>
+          <figure class="quote fade-up">
+            <blockquote>Finally, a template that respects accessibility and looks great doing it.</blockquote>
+            <figcaption class="muted">— Priya S., Frontend Engineer</figcaption>
+          </figure>
+          <figure class="quote fade-up">
+            <blockquote>Our lighthouse scores jumped immediately. Setup took minutes. 10/10.</blockquote>
+            <figcaption class="muted">— Marco D., Indie Hacker</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== CALL TO ACTION ====== -->
+    <section class="section">
+      <div class="container cta fade-up">
+        <div class="grid" style="grid-template-columns: 1.5fr .5fr">
+          <div>
+            <h3 style="margin:.2rem 0">Ready to build something amazing?</h3>
+            <p class="muted">Kickstart your next project with Nova’s modern foundation.</p>
+          </div>
+          <div class="center" style="display:grid; place-items:center">
+            <a href="#contact" class="btn">Get Nova</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== CONTACT ====== -->
+    <section id="contact" class="section">
+      <div class="container">
+        <div class="grid" style="grid-template-columns: 1.1fr .9fr">
+          <div class="fade-up">
+            <h2>Say hello 👋</h2>
+            <p class="muted">Questions, partnerships, or want a custom build? Drop us a line.</p>
+            <div id="formMsg" class="msg" role="status" aria-live="polite"></div>
+            <form id="contactForm" class="form" novalidate>
+              <div>
+                <label for="name">Name</label>
+                <input id="name" name="name" autocomplete="name" placeholder="Ada Lovelace" required />
+              </div>
+              <div>
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@domain.com" required />
+              </div>
+              <div class="full">
+                <label for="subject">Subject</label>
+                <input id="subject" name="subject" placeholder="How can we help?" required />
+              </div>
+              <div class="full">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="Tell us a bit about your project..." required></textarea>
+              </div>
+              <div class="full" style="display:flex; gap:10px; align-items:center; justify-content:flex-end">
+                <label class="hide-visually" for="consent">Consent</label>
+                <input id="consent" type="checkbox" required aria-describedby="consentHelp" />
+                <span id="consentHelp" class="muted">I agree to the privacy policy.</span>
+                <button class="btn" type="submit">Send message</button>
+              </div>
+            </form>
+          </div>
+          <aside class="fade-up">
+            <div class="card">
+              <h3>Contact</h3>
+              <p class="muted">We typically reply within 1 business day.</p>
+              <div class="spacer"></div>
+              <p><strong>Email:</strong> hello@nova.example</p>
+              <p><strong>Office:</strong> 123 Aurora Ave, Anywhere</p>
+              <div class="spacer"></div>
+              <h4>Follow</h4>
+              <p class="muted">Twitter • GitHub • Dribbble</p>
+              <div class="spacer"></div>
+              <h4>Newsletter</h4>
+              <p class="muted">Get tips & updates once a month.</p>
+              <form onsubmit="event.preventDefault(); alert('Subscribed! 🎉')">
+                <label class="hide-visually" for="nl">Email</label>
+                <div style="display:flex; gap:8px">
+                  <input id="nl" type="email" placeholder="you@domain.com" required />
+                  <button class="btn" type="submit">Subscribe</button>
+                </div>
+              </form>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="footer">
+    <div class="container grid" style="grid-template-columns: 1fr auto">
+      <p>© <span id="year"></span> Nova. All rights reserved.</p>
+      <a class="muted" href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <!-- ====== SCRIPTS ====== -->
+  <script>
+    // ====== Utilities ======
+    const $ = (sel, el=document) => el.querySelector(sel)
+    const $$ = (sel, el=document) => [...el.querySelectorAll(sel)]
+
+    // ====== Theme Toggle with Persistence ======
+    const root = document.documentElement
+    const themeToggle = $('#themeToggle')
+    const savedTheme = localStorage.getItem('nova-theme')
+    if (savedTheme) root.setAttribute('data-theme', savedTheme)
+    themeToggle.addEventListener('click', () => {
+      const current = root.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      const next = current === 'dark' ? 'light' : 'dark'
+      root.setAttribute('data-theme', next)
+      localStorage.setItem('nova-theme', next)
+      themeToggle.setAttribute('aria-label', `Switch to ${current} mode`)
+    })
+
+    // ====== Mobile Drawer ======
+    const burger = $('#burger'), drawer = $('#drawer')
+    const toggleDrawer = (open) => {
+      drawer.classList.toggle('open', open)
+      burger.setAttribute('aria-expanded', open)
+    }
+    burger.addEventListener('click', () => toggleDrawer(!drawer.classList.contains('open')))
+    drawer.addEventListener('click', e => {
+      if (e.target.tagName === 'A') toggleDrawer(false)
+    })
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') toggleDrawer(false) })
+
+    // ====== Smooth Scroll & Scrollspy ======
+    const links = $$('a[href^="#"]')
+    links.forEach(a => a.addEventListener('click', e => {
+      const id = a.getAttribute('href').slice(1)
+      const el = document.getElementById(id)
+      if (!el) return
+      e.preventDefault()
+      el.scrollIntoView({behavior:'smooth', block:'start'})
+      history.pushState(null, '', '#' + id)
+    }))
+
+    const spyTargets = ['features','showcase','pricing','testimonials','contact'].map(id => document.getElementById(id))
+    const navAnchors = [...$$('.nav-links a'), ...$$('#drawer a')]
+    const spy = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        const id = entry.target.id
+        const isTop = entry.isIntersecting && entry.intersectionRatio > 0.3
+        navAnchors.forEach(a => {
+          if (a.getAttribute('href') === '#' + id) a.classList.toggle('active', isTop)
+        })
+      })
+    }, { rootMargin: '-30% 0px -60% 0px', threshold: [0, .33, 1]})
+    spyTargets.forEach(t => t && spy.observe(t))
+
+    // ====== Reveal on Scroll ======
+    const reveal = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting){ entry.target.classList.add('show'); obs.unobserve(entry.target) }
+      })
+    }, {threshold: .2})
+    $$('.fade-up').forEach(el => reveal.observe(el))
+
+    // ====== Contact Form Validation ======
+    const form = $('#contactForm'), formMsg = $('#formMsg')
+    const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
+    form.addEventListener('submit', (e) => {
+      e.preventDefault()
+      const data = Object.fromEntries(new FormData(form).entries())
+      const errors = []
+      if (!data.name?.trim()) errors.push('Name is required.')
+      if (!isEmail(data.email)) errors.push('Please enter a valid email.')
+      if (!data.subject?.trim()) errors.push('Subject is required.')
+      if (!data.message?.trim()) errors.push('Message is required.')
+      if (!$('#consent').checked) errors.push('Please accept the privacy policy.')
+
+      if (errors.length){
+        formMsg.className = 'msg err'
+        formMsg.textContent = '❗ ' + errors.join(' ')
+        return
+      }
+      // Simulate successful submission
+      form.reset()
+      formMsg.className = 'msg ok'
+      formMsg.textContent = 'Thanks! Your message has been sent. ✔️'
+      setTimeout(() => formMsg.textContent = '', 5000)
+    })
+
+    // ====== Footer Year ======
+    $('#year').textContent = new Date().getFullYear()
+  </script>
+</body>
+</html>
